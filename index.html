@@ -242,6 +242,20 @@
             min-height: 130px;
             border: 2px solid var(--border);
         }
+
+        #resultSummary{
+            margin-top: 6px;
+        }
+
+        .toggle-calc-btn{
+            margin-top: 8px;
+            padding: 4px 12px;
+            font-size: 0.85em;
+            border-radius: 999px;
+            border: 1px solid #ccc;
+            background: #f3f3f3;
+            cursor: pointer;
+        }
         
         .calculation-display {
             background: #fff;
@@ -251,7 +265,7 @@
             font-size: 0.95em;
             border: 2px solid #e0e0e0;
             max-width: 95%;
-            margin: 0 auto;
+            margin: 8px auto 0;
         }
         
         .calculation-line {
@@ -619,7 +633,14 @@
         </div>
         
         <div id="results">
-            <p class="info-note">Select one solution from each group and click the button to see if precipitation occurs</p>
+            <p class="info-note" id="resultsInfo">
+                Select one solution from each group and click the button to see if precipitation occurs
+            </p>
+            <div id="resultSummary"></div>
+            <button id="toggleCalcBtn" class="toggle-calc-btn" style="display:none;">
+                Show calculation steps
+            </button>
+            <div id="calcSection" style="display:none;"></div>
         </div>
     </div>
 
@@ -663,6 +684,11 @@
 
         const KSP_MGCO3 = 3.5e-8;
         let animationInProgress = false;
+
+        const resultsInfo    = document.getElementById("resultsInfo");
+        const resultSummary  = document.getElementById("resultSummary");
+        const calcSection    = document.getElementById("calcSection");
+        const toggleCalcBtn  = document.getElementById("toggleCalcBtn");
 
         function toSuperscript(exponent) {
             const map = {
@@ -855,17 +881,28 @@
         function calculate() {
             const r1 = document.querySelector('input[name="group1"]:checked');
             const r2 = document.querySelector('input[name="group2"]:checked');
+
+            // Reset result display areas
+            resultSummary.innerHTML = "";
+            calcSection.innerHTML = "";
+            calcSection.style.display = "none";
+            toggleCalcBtn.style.display = "none";
+            toggleCalcBtn.textContent = "Show calculation steps";
+            resultsInfo.style.display = "none";
+
             if (!r1 || !r2) {
-                document.getElementById("results").innerHTML =
-                    '<p class="info-note">Please select one solution from each group</p>';
+                resultsInfo.innerHTML =
+                    'Please select one solution from each group';
+                resultsInfo.style.display = "block";
                 return;
             }
 
             const key = r1.value + "-" + r2.value;
             const combo = combinations[key];
             if (!combo) {
-                document.getElementById("results").innerHTML =
-                    '<p class="info-note">This combination is not defined.</p>';
+                resultsInfo.innerHTML =
+                    'This combination is not defined.';
+                resultsInfo.style.display = "block";
                 return;
             }
 
@@ -897,6 +934,7 @@
             const willPrecipitate = ionProduct > combo.ksp;
             runAnimation(willPrecipitate, s1, s2);
 
+            // Build calculation HTML (hidden behind toggle)
             let html = '<div class="calculation-display">';
 
             html += '<div class="calculation-line">';
@@ -933,19 +971,28 @@
             html += "K<sub>sp</sub> = " + formatNumber(combo.ksp);
             html += "</div>";
 
+            // Summary message (used both in calc section and separate summary)
+            let summaryHtml = "";
+
             if (key === "3-c") {
                 if (ionProduct > combo.ksp) {
-                    html += '<div class="ip-result precipitate-yes">I.P. of Ca₃(PO₄)₂ &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
+                    summaryHtml =
+                        '<div class="ip-result precipitate-yes">I.P. of Ca₃(PO₄)₂ &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
                 } else {
-                    html += '<div class="ip-result precipitate-no">I.P. of Ca₃(PO₄)₂ &lt; K<sub>sp</sub> ⇒ no ppt</div>';
+                    summaryHtml =
+                        '<div class="ip-result precipitate-no">I.P. of Ca₃(PO₄)₂ &lt; K<sub>sp</sub> ⇒ no ppt</div>';
                 }
             } else {
                 if (ionProduct > combo.ksp) {
-                    html += '<div class="ip-result precipitate-yes">I.P. &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
+                    summaryHtml =
+                        '<div class="ip-result precipitate-yes">I.P. &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
                 } else {
-                    html += '<div class="ip-result precipitate-no">I.P. &lt; K<sub>sp</sub> ⇒ no ppt</div>';
+                    summaryHtml =
+                        '<div class="ip-result precipitate-no">I.P. &lt; K<sub>sp</sub> ⇒ no ppt</div>';
                 }
             }
+
+            html += summaryHtml;
 
             if (key === "3-c") {
                 const mgCat = mixedConcentration("Mg");
@@ -991,7 +1038,16 @@
 
             html += "</div>";
 
-            document.getElementById("results").innerHTML = html;
+            // Put the full working into the calc section (hidden by default)
+            calcSection.innerHTML = html;
+            calcSection.style.display = "none";
+
+            // Show separate summary (always visible)
+            resultSummary.innerHTML = summaryHtml;
+
+            // Enable toggle button
+            toggleCalcBtn.style.display = "inline-block";
+
             updateKspDisplay();
         }
 
@@ -1017,8 +1073,14 @@
             c1.style.backgroundColor = "#f0f0f0";
             c2.style.backgroundColor = "#f0f0f0";
 
-            document.getElementById("results").innerHTML =
-                '<p class="info-note">Select one solution from each group and click the button to see if precipitation occurs</p>';
+            resultsInfo.innerHTML =
+                'Select one solution from each group and click the button to see if precipitation occurs';
+            resultsInfo.style.display = "block";
+            resultSummary.innerHTML = "";
+            calcSection.innerHTML = "";
+            calcSection.style.display = "none";
+            toggleCalcBtn.style.display = "none";
+            toggleCalcBtn.textContent = "Show calculation steps";
 
             const box = document.getElementById("kspDisplay");
             box.style.display = "none";
@@ -1053,6 +1115,17 @@
             
             animationInProgress = false;
         }
+
+        // Toggle button behaviour
+        toggleCalcBtn.addEventListener("click", function(){
+            if (calcSection.style.display === "none" || calcSection.style.display === "") {
+                calcSection.style.display = "block";
+                toggleCalcBtn.textContent = "Hide calculation steps";
+            } else {
+                calcSection.style.display = "none";
+                toggleCalcBtn.textContent = "Show calculation steps";
+            }
+        });
 
         document.getElementById("calculateBtn").addEventListener("click", calculate);
         document.getElementById("resetBtn").addEventListener("click", resetAll);
