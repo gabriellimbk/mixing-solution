@@ -3,50 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solubility - mixing of 2 solutions</title>
+    <title>• Mixing of solutions •</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 10px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        :root{
+            --bg:#ffffff;
+            --panel:#f8f9fa;
+            --ink:#000000;
+            --muted:#6c757d;
+            --blue:#0066cc;
+            --green:#00aa44;
+            --red:#dc3545;
+            --cyan:#0088aa;
+            --border:#333333;
         }
-        
+
+        *{ box-sizing:border-box; }
+
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100dvh;
+        }
+
         .container {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 680px;
-            margin: 0 auto;
+            background: var(--panel);
+            border-radius: 18px;
+            padding: 16px 20px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 880px;
+            margin: 24px auto 32px;
+            border: 4px solid var(--border);
+        }
+
+        .top-header{
+            margin:-16px -20px 16px;
+            padding:18px 20px 10px;
+            text-align:center;
+            background:linear-gradient(to bottom,#e8f4f8,#ffffff);
+            border-bottom:4px solid var(--border);
+            border-radius:14px 14px 0 0;
         }
         
         h1 {
-            color: #333;
+            color: #000;
             text-align: center;
-            margin-bottom: 5px;
+            margin: 0;
             font-size: 1.8em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-weight: 800;
         }
 
         .subtitle {
             text-align: center;
-            color: #444;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
+            color: var(--muted);
+            margin: .35rem 0 0.2rem;
+            font-size: 0.98rem;
         }
         
         .main-section {
             display: flex;
-            gap: 18px;
+            gap: 40px;
             align-items: flex-start;
             margin-bottom: 15px;
+            justify-content: center;
+            max-width: 760px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .main-section.hidden {
+            display: none;
         }
         
         .beaker-group {
-            flex: 1;
+            flex: 0 0 240px;
         }
         
         .beaker-display {
@@ -55,55 +88,65 @@
             position: relative;
         }
         
+        /* Static beakers: start empty */
         .beaker-visual {
             width: 135px;
             height: 165px;
             margin: 0 auto 6px;
             position: relative;
-            border: 3px solid #333;
+            border: 4px solid var(--blue);
             border-top: none;
             border-radius: 0 0 50px 50px;
             transition: all 0.5s ease;
             background: linear-gradient(to bottom, transparent 100%);
         }
-        
-        .beaker-content {
-            position: absolute;
-            top: 52%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 2px 4px;
-            border-radius: 6px;
+
+        /* Shared "cell" style for solution description (static + animated) */
+        .beaker-content,
+        .beaker-content-anim {
+            position: static;
+            transform: none;
+            margin: 4px auto 0;
+            display: inline-block;
+            min-width: 140px;
+            padding: 3px 8px;
+            border-radius: 10px;
             font-size: 0.78em;
             line-height: 1.2;
-            pointer-events: none;
-            color: #111;
             text-align: center;
-            max-width: 80%;
             word-wrap: break-word;
+            color: #000;
+            border: 2px solid rgba(0,0,0,0.25);
+            background: #f0f0f0;
         }
         
         .radio-section {
-            background: #f0f0f0;
+            background: #fff;
             padding: 6px;
-            border-radius: 10px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
         }
         
+        .radio-section.hidden {
+            display: none;
+        }
+        
+        /* reduced vertical height of radio cells */
         .radio-option {
             display: flex;
             align-items: center;
             margin: 2px 0;
-            padding: 3px 5px;
-            background: white;
-            border-radius: 8px;
+            padding: 3px 7px;
+            background: #fdfdfd;
+            border-radius: 9px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             border: 2px solid transparent;
         }
         
         .radio-option:hover {
-            background: #e8f5e9;
-            transform: translateX(2px);
+            background: #e6f2ff;
+            transform: translateX(1px);
         }
         
         .radio-option input[type="radio"]:checked + label {
@@ -111,8 +154,8 @@
         }
         
         .radio-option.selected {
-            background: #e8f5e9;
-            border: 2px solid #4caf50;
+            background: #e6f2ff;
+            border: 2px solid var(--blue);
         }
         
         input[type="radio"] {
@@ -126,79 +169,86 @@
         }
         
         .solution-info {
-            font-size: 0.78em;
-            color: #555;
+            font-size: 0.76em;
+            color: #333;
             margin-left: 1px;
         }
 
         .solution-line {
             display: block;
-            line-height: 1.2;
+            line-height: 1.15;
         }
 
         .ksp-display {
-            margin: 8px auto 12px;
+            margin: 10px auto 14px;
             padding: 8px 16px;
             max-width: 520px;
             text-align: center;
-            background: #eef2ff;
+            background: #e6f2ff;
             border-radius: 999px;
-            font-weight: 600;
-            color: #4338ca;
+            font-weight: 700;
+            color: var(--blue);
             display: none;
             font-size: 0.9em;
+            border: 2px solid var(--blue);
         }
         
         .controls {
             text-align: center;
-            margin: 16px 0;
+            margin: 18px 0 8px;
         }
         
         button {
             padding: 8px 20px;
             font-size: 14px;
-            border: none;
+            border: 2px solid var(--border);
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             margin: 0 6px;
-            font-weight: bold;
+            font-weight: 700;
+            background:#fff;
+            color: var(--ink);
         }
         
         #calculateBtn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #e6f2ff 0%, #cce0ff 100%);
+            color: #000;
+            border-color: var(--blue);
         }
         
         #calculateBtn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
         }
         
         #resetBtn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+            background: linear-gradient(135deg, #ffe6ea 0%, #ffd1da 100%);
+            color: #000;
+            border-color: var(--red);
         }
         
         #resetBtn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 24px rgba(245, 87, 108, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
         }
         
         #results {
             margin-top: 12px;
-            padding: 14px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 12px;
             min-height: 130px;
+            border: 2px solid var(--border);
         }
         
         .calculation-display {
-            background: white;
+            background: #fff;
             padding: 14px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             font-size: 0.95em;
+            border: 2px solid #e0e0e0;
         }
         
         .calculation-line {
@@ -220,21 +270,23 @@
         .fraction .numerator {
             padding: 2px 4px;
             border-bottom: 2px solid black;
+            background:#fff;
         }
         
         .fraction .denominator {
             padding: 2px 4px;
+            background:#fff;
         }
         
         .highlight-yellow {
-            background: rgba(255, 224, 102, 0.6);
+            background: rgba(255, 224, 102, 0.7);
             padding: 1px 3px;
             border-radius: 3px;
             font-weight: bold;
         }
         
         .highlight-purple {
-            background: rgba(125, 211, 252, 0.6); /* light blue */
+            background: rgba(125, 211, 252, 0.7);
             padding: 1px 3px;
             border-radius: 3px;
             font-weight: bold;
@@ -247,43 +299,215 @@
             text-align: center;
             font-size: 1em;
             font-weight: bold;
+            border: 2px solid transparent;
         }
         
         .precipitate-yes {
-            background: #fee;
-            border: 2px solid #dc2626;
-            color: #dc2626;
+            background: #ffe0e6;
+            border-color: #ff1744;
+            color: #ff1744;
         }
         
         .precipitate-no {
-            background: #e6fffa;
-            border: 2px solid #059669;
-            color: #059669;
+            background: #ccffdb;
+            border-color: #00c853;
+            color: #00a944;
         }
         
         .info-note {
             text-align: center;
-            color: #666;
+            color: var(--muted);
             font-style: italic;
         }
         
         sup, sub {
             font-size: 0.75em;
         }
+        
+        /* Animation styles */
+        .animation-container {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            min-height: 280px;
+            overflow: visible;
+        }
+        
+        .animation-container.active {
+            display: block;
+        }
+        
+        .beakers-pouring-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 240px;
+            position: relative;
+            height: 220px;
+        }
+        
+        .pouring-wrapper {
+            position: relative;
+            flex: 0 0 135px;
+            text-align: center;
+        }
+        
+        .pouring-beaker {
+            width: 135px;
+            height: 165px;
+            position: relative;
+            border: 4px solid var(--blue);
+            border-top: none;
+            border-radius: 0 0 50px 50px;
+            transition: all 0.5s ease;
+            background: linear-gradient(to bottom, transparent 100%);
+            margin: 0 auto;
+        }
+        
+        .pouring-beaker.left {
+            transform-origin: bottom center;
+            animation: pourLeft 2.5s ease-in-out forwards;
+        }
+        
+        .pouring-beaker.right {
+            transform-origin: bottom center;
+            animation: pourRight 2.5s ease-in-out forwards;
+        }
+        
+        @keyframes pourLeft {
+            0%, 30% {
+                transform: rotate(0deg) translateY(0);
+            }
+            50%, 70% {
+                transform: rotate(18deg) translateY(-10px);
+            }
+            100% {
+                transform: rotate(0deg) translateY(0);
+            }
+        }
+        
+        @keyframes pourRight {
+            0%, 30% {
+                transform: rotate(0deg) translateY(0);
+            }
+            50%, 70% {
+                transform: rotate(-18deg) translateY(-10px);
+            }
+            100% {
+                transform: rotate(0deg) translateY(0);
+            }
+        }
+        
+        .combined-beaker-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 30px;
+            z-index: 10;
+            text-align:center;
+        }
+        
+        .combined-beaker {
+            width: 150px;
+            height: 180px;
+            margin: 0 auto;
+            position: relative;
+            border: 4px solid var(--blue);
+            border-top: none;
+            border-radius: 0 0 60px 60px;
+            background: linear-gradient(to bottom, transparent 100%);
+        }
+
+        /* volume text inside combined beaker, no border */
+        .combined-volume{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            font-weight:700;
+            font-size:0.9rem;
+            padding:2px 8px;
+            border-radius:999px;
+            background:rgba(255,255,255,0.9);
+        }
+        
+        .combined-beaker.filling {
+            animation: fillBeaker 2.5s ease-in-out forwards;
+        }
+        
+        @keyframes fillBeaker {
+            0%, 40% {
+                background: linear-gradient(to bottom, transparent 100%);
+            }
+            70%, 100% {
+                background: linear-gradient(to bottom, transparent 60%, #f0f0f0 60%);
+            }
+        }
+        
+        .precipitate {
+            position: absolute;
+            bottom: 3px;
+            left: 15%;
+            right: 15%;
+            height: 0;
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 1s ease-in;
+        }
+        
+        .precipitate.show {
+            animation: formPrecipitate 1s ease-in forwards;
+            animation-delay: 2.5s;
+        }
+        
+        @keyframes formPrecipitate {
+            from {
+                opacity: 0;
+                height: 0;
+            }
+            to {
+                opacity: 1;
+                height: 25px;
+            }
+        }
+
+        .animation-label {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        .main-section.animating .beaker-display {
+            display: none;
+        }
+
+        @media (max-width: 768px){
+            .main-section{
+                flex-direction:column;
+                align-items:center;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Solubility - mixing of 2 solutions</h1>
-        <p class="subtitle">Will a ppt form when the two solutions are mixed?</p>
+        <div class="top-header">
+            <h1>• Mixing of Solutions •</h1>
+            <p class="subtitle">Will a ppt form when the two solutions are mixed?</p>
+        </div>
         
-        <div class="main-section">
+        <div class="main-section" id="mainSection">
             <div class="beaker-group">
                 <div class="beaker-display">
                     <div class="beaker-visual" id="beaker1-visual"></div>
                     <div class="beaker-content" id="beaker1-content"></div>
                 </div>
-                <div class="radio-section">
+                <div class="radio-section" id="radioSection1">
                     <div class="radio-option" data-solution="1">
                         <input type="radio" name="group1" id="solution-1" value="1">
                         <label for="solution-1">
@@ -304,7 +528,7 @@
                     </div>
                     <div class="radio-option" data-solution="3">
                         <input type="radio" name="group1" id="solution-3" value="3">
-                        <label for="solution-3">
+                            <label for="solution-3">
                             <span class="solution-info">
                                 <span class="solution-line">100 cm³ of CaCO₃(aq)</span>
                                 <span class="solution-line">1×10⁻⁵ mol dm⁻³</span>
@@ -319,7 +543,7 @@
                     <div class="beaker-visual" id="beaker2-visual"></div>
                     <div class="beaker-content" id="beaker2-content"></div>
                 </div>
-                <div class="radio-section">
+                <div class="radio-section" id="radioSection2">
                     <div class="radio-option" data-solution="a">
                         <input type="radio" name="group2" id="solution-a" value="a">
                         <label for="solution-a">
@@ -350,6 +574,27 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Animation container -->
+        <div class="animation-container" id="animationContainer">
+            <div class="beakers-pouring-container">
+                <div class="pouring-wrapper">
+                    <div class="pouring-beaker left" id="leftBeaker"></div>
+                    <div class="beaker-content-anim" id="leftBeakerContent"></div>
+                </div>
+                <div class="combined-beaker-container">
+                    <div class="combined-beaker" id="combinedBeaker">
+                        <div class="combined-volume" id="combinedVolumeLabel"></div>
+                        <div class="precipitate" id="precipitate"></div>
+                    </div>
+                    <div class="animation-label">Mixed Solution</div>
+                </div>
+                <div class="pouring-wrapper">
+                    <div class="pouring-beaker right" id="rightBeaker"></div>
+                    <div class="beaker-content-anim" id="rightBeakerContent"></div>
+                </div>
+            </div>
+        </div>
 
         <!-- Ksp text display -->
         <div id="kspDisplay" class="ksp-display"></div>
@@ -366,7 +611,6 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Beaker / stock solution data
         const solutions = {
             "1": { ionLabel: "Li⁺",       volumeCm3: 20,  volumeDm3: 0.020, volumeStr: "0.020", concStr: "1.0",      colorHex: "#FFE066" },
             "2": { ionLabel: "Mg²⁺",      volumeCm3: 50,  volumeDm3: 0.050, volumeStr: "0.050", concStr: "0.0010",   colorHex: "#FFE066" },
@@ -376,7 +620,6 @@
             "c": { ionLabel: "Mg₃(PO₄)₂", volumeCm3: 100, volumeDm3: 0.100, volumeStr: "0.100", concStr: "5 × 10⁻⁵", colorHex: "#7DD3FC" }
         };
 
-        // Ionic species present in each stock solution (mol dm⁻3)
         const speciesContributions = {
             "1": { Li: { conc: 1.0,    concStr: "1.0" } },
             "2": { Mg: { conc: 0.0010, concStr: "0.0010" } },
@@ -387,13 +630,11 @@
             "a": { F:   { conc: 0.010,   concStr: "0.010" } },
             "b": { CO3: { conc: 0.0010,  concStr: "0.0010" } },
             "c": {
-                // Mg₃(PO₄)₂ at 5×10⁻⁵ mol dm⁻3
-                Mg:  { conc: 0.00015, concStr: "0.00015" }, // 3×5×10⁻⁵
-                PO4: { conc: 0.00010, concStr: "0.00010" }  // 2×5×10⁻⁵
+                Mg:  { conc: 0.00015, concStr: "0.00015" },
+                PO4: { conc: 0.00010, concStr: "0.00010" }
             }
         };
 
-        // Combination data: main salt (for primary ppt) and its Ksp text
         const combinations = {
             "1-a": { cationId: "Li",  cationLabel: "Li⁺", anionId: "F",   anionLabel: "F⁻",     pCat: 1, pAn: 1, ksp: 3.8e-3,  kspText: "K<sub>sp</sub> value of LiF = 3.8×10<sup>-3</sup>" },
             "1-b": { cationId: "Li",  cationLabel: "Li⁺", anionId: "CO3", anionLabel: "CO₃²⁻",  pCat: 2, pAn: 1, ksp: 2.5e-2,  kspText: "K<sub>sp</sub> value of Li₂CO₃ = 2.5×10<sup>-2</sup>" },
@@ -407,8 +648,8 @@
         };
 
         const KSP_MGCO3 = 3.5e-8;
+        let animationInProgress = false;
 
-        // Convert exponent integer -> unicode superscript string (e.g. -6 -> ⁻⁶)
         function toSuperscript(exponent) {
             const map = {
                 '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
@@ -419,24 +660,19 @@
             return expStr.split("").map(ch => map[ch] || ch).join("");
         }
 
-        // Format numbers:
-        // - Normal region: trimmed decimals (0.500 → 0.5)
-        // - Scientific region: a.bcd × 10ⁿ using unicode superscripts, like radio text
         function formatNumber(num, precision) {
             if (precision === undefined) precision = 3;
             const abs = Math.abs(num);
             if (abs === 0) return "0";
 
-            // Scientific notation region
             if (abs < 1e-4 || abs > 1e4) {
                 const expStr = num.toExponential(precision);
-                const parts = expStr.split('e');    // ["5.000", "-6"]
+                const parts = expStr.split('e');
                 const mantissa = parseFloat(parts[0]).toPrecision(precision);
                 const exponent = parseInt(parts[1], 10);
                 return mantissa + " × 10" + toSuperscript(exponent);
             }
 
-            // Normal numbers: trim trailing zeros
             const s = num.toPrecision(precision);
             return parseFloat(s).toString();
         }
@@ -479,22 +715,29 @@
             }
         }
 
+        function setCellAppearance(cell, sol) {
+            if (!cell || !sol) return;
+            cell.style.backgroundColor = sol.colorHex;
+            cell.style.borderColor = 'rgba(0,0,0,0.35)';
+            cell.style.color = '#000';
+        }
+
         function updateBeakerVisual(beakerId, sol, contentId) {
             const beaker = document.getElementById(beakerId);
             const label = document.getElementById(contentId);
-            const maxVolume = 100; // largest volume
-            const fillFraction = sol.volumeCm3 / maxVolume; // 0.2, 0.5, 1.0
-            const cutoff = 100 - fillFraction * 100; // % from top
+            const maxVolume = 100;
+            const fillFraction = sol.volumeCm3 / maxVolume;
+            const cutoff = 100 - fillFraction * 100;
 
             beaker.style.background = `linear-gradient(to bottom, transparent ${cutoff}%, ${sol.colorHex} ${cutoff}%)`;
 
-            // Beaker overlay text
             label.innerHTML =
                 sol.volumeCm3 + " cm³ of " + sol.ionLabel + "(aq)<br>" +
-                sol.concStr + " mol dm<sup>-3</sup>";
+                sol.concStr + " mol dm⁻³";
+
+            setCellAppearance(label, sol);
         }
 
-        // Radio behaviour: highlight selection, fill beaker, show text, update Ksp
         const radios = document.querySelectorAll('input[type="radio"]');
         for (let i = 0; i < radios.length; i++) {
             radios[i].addEventListener("change", function () {
@@ -502,7 +745,6 @@
                 const value = this.value;
                 const sol = solutions[value];
 
-                // Highlight selection in that group
                 const sameGroup =
                     document.querySelectorAll('input[name="' + group + '"]');
                 for (let j = 0; j < sameGroup.length; j++) {
@@ -510,7 +752,6 @@
                 }
                 this.closest(".radio-option").classList.add("selected");
 
-                // Update beaker visuals + overlay text
                 if (group === "group1") {
                     updateBeakerVisual("beaker1-visual", sol, "beaker1-content");
                 } else {
@@ -519,6 +760,82 @@
 
                 updateKspDisplay();
             });
+        }
+
+        function runAnimation(willPrecipitate, s1, s2) {
+            if (animationInProgress) return;
+            animationInProgress = true;
+            
+            document.getElementById("radioSection1").classList.add("hidden");
+            document.getElementById("radioSection2").classList.add("hidden");
+            document.getElementById("mainSection").classList.add("animating");
+            document.getElementById("animationContainer").classList.add("active");
+            
+            const leftBeaker = document.getElementById("leftBeaker");
+            const rightBeaker = document.getElementById("rightBeaker");
+            const combinedBeaker = document.getElementById("combinedBeaker");
+            const combinedVolumeLabel = document.getElementById("combinedVolumeLabel");
+            const precipitate = document.getElementById("precipitate");
+            const leftCell = document.getElementById("leftBeakerContent");
+            const rightCell = document.getElementById("rightBeakerContent");
+            
+            const maxVolume = 100;
+            const leftFill = 100 - (s1.volumeCm3 / maxVolume) * 100;
+            const rightFill = 100 - (s2.volumeCm3 / maxVolume) * 100;
+
+            // Show fill in the original beakers during most of the animation
+            leftBeaker.style.background =
+                `linear-gradient(to bottom, transparent ${leftFill}%, ${s1.colorHex} ${leftFill}%)`;
+            rightBeaker.style.background =
+                `linear-gradient(to bottom, transparent ${rightFill}%, ${s2.colorHex} ${rightFill}%)`;
+            
+            // Two-line labels under animated beakers
+            leftCell.innerHTML = 
+                s1.volumeCm3 + " cm³ of " + s1.ionLabel + "(aq)<br>" +
+                s1.concStr + " mol dm⁻³";
+            rightCell.innerHTML = 
+                s2.volumeCm3 + " cm³ of " + s2.ionLabel + "(aq)<br>" +
+                s2.concStr + " mol dm⁻³";
+
+            setCellAppearance(leftCell, s1);
+            setCellAppearance(rightCell, s2);
+
+            const totalVolume = s1.volumeCm3 + s2.volumeCm3;
+            // total volume text appears later, so start empty
+            combinedVolumeLabel.textContent = "";
+            
+            leftBeaker.classList.remove("left");
+            rightBeaker.classList.remove("right");
+            combinedBeaker.classList.remove("filling");
+            precipitate.classList.remove("show");
+            
+            void leftBeaker.offsetWidth;
+            
+            leftBeaker.classList.add("left");
+            rightBeaker.classList.add("right");
+            combinedBeaker.classList.add("filling");
+            
+            if (willPrecipitate) {
+                precipitate.classList.add("show");
+            }
+
+            // Animation duration ~2.5 s. At 1.5 s (1 s before end):
+            // 1) remove fill from original beakers
+            // 2) show total volume label in combined beaker
+            setTimeout(() => {
+                leftBeaker.style.background =
+                    "linear-gradient(to bottom, transparent 100%)";
+                rightBeaker.style.background =
+                    "linear-gradient(to bottom, transparent 100%)";
+                combinedVolumeLabel.textContent = totalVolume + " cm³";
+            }, 1500);
+
+            // Keep blocking new animations a bit longer, then release
+            setTimeout(() => {
+                setTimeout(() => {
+                    animationInProgress = false;
+                }, 1000);
+            }, 3500);
         }
 
         function calculate() {
@@ -554,7 +871,6 @@
                 return { conc: conc, c1: c1, c2: c2 };
             }
 
-            // Main salt calculation (from combo mapping)
             const cat = mixedConcentration(combo.cationId);
             const an = mixedConcentration(combo.anionId);
 
@@ -563,10 +879,12 @@
 
             const ionProduct =
                 Math.pow(cCat, combo.pCat) * Math.pow(cAn, combo.pAn);
+            
+            const willPrecipitate = ionProduct > combo.ksp;
+            runAnimation(willPrecipitate, s1, s2);
 
             let html = '<div class="calculation-display">';
 
-            // cation line
             html += '<div class="calculation-line">';
             html += "[" + combo.cationLabel + "]<sub>on mixing</sub> = ";
             html += '<div class="fraction">' +
@@ -578,7 +896,6 @@
             html += " = " + formatNumber(cCat) + " mol dm⁻³";
             html += "</div>";
 
-            // anion line
             html += '<div class="calculation-line">';
             html += "[" + combo.anionLabel + "]<sub>on mixing</sub> = ";
             html += '<div class="fraction">' +
@@ -590,7 +907,6 @@
             html += " = " + formatNumber(cAn) + " mol dm⁻³";
             html += "</div>";
 
-            // IP line for main salt
             html += '<div class="calculation-line" style="margin-top:18px;">';
             html += "I.P. = (" + formatNumber(cCat) + ")";
             if (combo.pCat > 1) html += "<sup>" + combo.pCat + "</sup>";
@@ -599,12 +915,10 @@
             html += " = " + formatNumber(ionProduct);
             html += "</div>";
 
-            // Ksp line for main salt (calculation section)
             html += '<div class="calculation-line" style="margin-top:10px;">';
             html += "K<sub>sp</sub> = " + formatNumber(combo.ksp);
             html += "</div>";
 
-            // conclusion for main salt
             if (key === "3-c") {
                 if (ionProduct > combo.ksp) {
                     html += '<div class="ip-result precipitate-yes">I.P. of Ca₃(PO₄)₂ &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
@@ -619,9 +933,7 @@
                 }
             }
 
-            // EXTRA: For combination (3)(c), also show MgCO₃ IP + Ksp
             if (key === "3-c") {
-                // Mg²⁺ from solution 2 (c), CO₃²⁻ from solution 1 (3)
                 const mgCat = mixedConcentration("Mg");
                 const co3An = mixedConcentration("CO3");
 
@@ -629,7 +941,6 @@
                 const cCO3 = co3An.conc;
                 const ipMgCO3 = cMg * cCO3;
 
-                // Mg2+ line
                 html += '<div class="calculation-line" style="margin-top:18px;">';
                 html += "[Mg²⁺]<sub>on mixing</sub> = ";
                 html += '<div class="fraction">' +
@@ -641,7 +952,6 @@
                 html += " = " + formatNumber(cMg) + " mol dm⁻³";
                 html += "</div>";
 
-                // CO3^2- line
                 html += '<div class="calculation-line">';
                 html += "[CO₃²⁻]<sub>on mixing</sub> = ";
                 html += '<div class="fraction">' +
@@ -653,18 +963,15 @@
                 html += " = " + formatNumber(cCO3) + " mol dm⁻³";
                 html += "</div>";
 
-                // IP for MgCO3
                 html += '<div class="calculation-line" style="margin-top:18px;">';
                 html += "I.P. (for MgCO₃) = (" + formatNumber(cMg) + ")(" + formatNumber(cCO3) + ")";
                 html += " = " + formatNumber(ipMgCO3);
                 html += "</div>";
 
-                // Ksp for MgCO3 in calculation section
                 html += '<div class="calculation-line" style="margin-top:10px;">';
                 html += "K<sub>sp</sub> (for MgCO₃) = " + formatNumber(KSP_MGCO3);
                 html += "</div>";
 
-                // MgCO3 conclusion
                 html += '<div class="ip-result precipitate-no">I.P. of MgCO₃ &lt; K<sub>sp</sub> ⇒ no ppt</div>';
             }
 
@@ -693,6 +1000,8 @@
             b2.style.background = "linear-gradient(to bottom, transparent 100%)";
             c1.innerHTML = "";
             c2.innerHTML = "";
+            c1.style.backgroundColor = "#f0f0f0";
+            c2.style.backgroundColor = "#f0f0f0";
 
             document.getElementById("results").innerHTML =
                 '<p class="info-note">Select one solution from each group and click the button to see if precipitation occurs</p>';
@@ -700,6 +1009,35 @@
             const box = document.getElementById("kspDisplay");
             box.style.display = "none";
             box.innerHTML = "";
+            
+            document.getElementById("animationContainer").classList.remove("active");
+            document.getElementById("mainSection").classList.remove("animating");
+            document.getElementById("radioSection1").classList.remove("hidden");
+            document.getElementById("radioSection2").classList.remove("hidden");
+            
+            const leftBeaker = document.getElementById("leftBeaker");
+            const rightBeaker = document.getElementById("rightBeaker");
+            const combinedBeaker = document.getElementById("combinedBeaker");
+            const precipitate = document.getElementById("precipitate");
+            const leftCell = document.getElementById("leftBeakerContent");
+            const rightCell = document.getElementById("rightBeakerContent");
+            const combinedVolumeLabel = document.getElementById("combinedVolumeLabel");
+            
+            leftBeaker.classList.remove("left");
+            rightBeaker.classList.remove("right");
+            combinedBeaker.classList.remove("filling");
+            precipitate.classList.remove("show");
+            
+            leftBeaker.style.background = "linear-gradient(to bottom, transparent 100%)";
+            rightBeaker.style.background = "linear-gradient(to bottom, transparent 100%)";
+            combinedBeaker.style.background = "linear-gradient(to bottom, transparent 100%)";
+            leftCell.innerHTML = "";
+            rightCell.innerHTML = "";
+            leftCell.style.backgroundColor = "#f0f0f0";
+            rightCell.style.backgroundColor = "#f0f0f0";
+            combinedVolumeLabel.textContent = "";
+            
+            animationInProgress = false;
         }
 
         document.getElementById("calculateBtn").addEventListener("click", calculate);
