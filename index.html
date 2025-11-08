@@ -34,7 +34,7 @@
             border-radius: 18px;
             padding: 16px 20px 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            max-width: 650px; /* narrowed from 880px */
+            max-width: 760px; /* narrower display */
             margin: 24px auto 32px;
             border: 4px solid var(--border);
         }
@@ -65,11 +65,11 @@
         
         .main-section {
             display: flex;
-            gap: 24px;              /* narrower gap */
+            gap: 32px;
             align-items: flex-start;
             margin-bottom: 15px;
             justify-content: center;
-            max-width: 600px;       /* narrower content width */
+            max-width: 640px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -79,7 +79,7 @@
         }
         
         .beaker-group {
-            flex: 0 0 220px;        /* slightly narrower beaker columns */
+            flex: 0 0 220px;
         }
         
         .beaker-display {
@@ -179,18 +179,19 @@
             line-height: 1.15;
         }
 
+        /* Ksp text: plain blue text, no pill, no border */
         .ksp-display {
             margin: 10px auto 14px;
-            padding: 8px 16px;
+            padding: 0;
             max-width: 520px;
             text-align: center;
-            background: #e6f2ff;
-            border-radius: 999px;
+            background: transparent;
+            border-radius: 0;
             font-weight: 700;
             color: var(--blue);
             display: none;
             font-size: 0.9em;
-            border: 2px solid var(--blue);
+            border: none;
         }
         
         .controls {
@@ -249,6 +250,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             font-size: 0.95em;
             border: 2px solid #e0e0e0;
+            max-width: 95%;
+            margin: 0 auto;
         }
         
         .calculation-line {
@@ -342,7 +345,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            gap: 200px; /* narrower gap so it fits inside narrower container */
+            gap: 200px;
             position: relative;
             height: 220px;
         }
@@ -492,6 +495,17 @@
                 align-items:center;
             }
         }
+
+        /* Slightly more zoomed-in look on small mobile */
+        @media (max-width: 600px){
+            .container{
+                transform:scale(1.06);
+                transform-origin: top center;
+            }
+            body{
+                overflow-x:hidden;
+            }
+        }
     </style>
 </head>
 <body>
@@ -528,7 +542,7 @@
                     </div>
                     <div class="radio-option" data-solution="3">
                         <input type="radio" name="group1" id="solution-3" value="3">
-                            <label for="solution-3">
+                        <label for="solution-3">
                             <span class="solution-info">
                                 <span class="solution-line">100 cm³ of CaCO₃(aq)</span>
                                 <span class="solution-line">1×10⁻⁵ mol dm⁻³</span>
