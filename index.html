@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solubility - mixing of 2 solutions</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 680px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #444;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .main-section {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .beaker-group {
+            flex: 1;
+        }
+        
+        .beaker-display {
+            text-align: center;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .beaker-visual {
+            width: 135px;
+            height: 165px;
+            margin: 0 auto 6px;
+            position: relative;
+            border: 3px solid #333;
+            border-top: none;
+            border-radius: 0 0 50px 50px;
+            transition: all 0.5s ease;
+            background: linear-gradient(to bottom, transparent 100%);
+        }
+        
+        .beaker-content {
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 2px 4px;
+            border-radius: 6px;
+            font-size: 0.78em;
+            line-height: 1.2;
+            pointer-events: none;
+            color: #111;
+            text-align: center;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .radio-section {
+            background: #f0f0f0;
+            padding: 6px;
+            border-radius: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin: 2px 0;
+            padding: 3px 5px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .radio-option:hover {
+            background: #e8f5e9;
+            transform: translateX(2px);
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            font-weight: 600;
+        }
+        
+        .radio-option.selected {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        
+        input[type="radio"] {
+            margin-right: 5px;
+            transform: scale(0.9);
+        }
+        
+        label {
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .solution-info {
+            font-size: 0.78em;
+            color: #555;
+            margin-left: 1px;
+        }
+
+        .solution-line {
+            display: block;
+            line-height: 1.2;
+        }
+
+        .ksp-display {
+            margin: 8px auto 12px;
+            padding: 8px 16px;
+            max-width: 520px;
+            text-align: center;
+            background: #eef2ff;
+            border-radius: 999px;
+            font-weight: 600;
+            color: #4338ca;
+            display: none;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 16px 0;
+        }
+        
+        button {
+            padding: 8px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 6px;
+            font-weight: bold;
+        }
+        
+        #calculateBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        #calculateBtn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        #resetBtn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        #resetBtn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(245, 87, 108, 0.4);
+        }
+        
+        #results {
+            margin-top: 12px;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 130px;
+        }
+        
+        .calculation-display {
+            background: white;
+            padding: 14px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 0.95em;
+        }
+        
+        .calculation-line {
+            margin: 9px 0;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+        
+        .fraction .numerator {
+            padding: 2px 4px;
+            border-bottom: 2px solid black;
+        }
+        
+        .fraction .denominator {
+            padding: 2px 4px;
+        }
+        
+        .highlight-yellow {
+            background: rgba(255, 224, 102, 0.6);
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .highlight-purple {
+            background: rgba(125, 211, 252, 0.6); /* light blue */
+            padding: 1px 3px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .ip-result {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        
+        .precipitate-yes {
+            background: #fee;
+            border: 2px solid #dc2626;
+            color: #dc2626;
+        }
+        
+        .precipitate-no {
+            background: #e6fffa;
+            border: 2px solid #059669;
+            color: #059669;
+        }
+        
+        .info-note {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        sup, sub {
+            font-size: 0.75em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Solubility - mixing of 2 solutions</h1>
+        <p class="subtitle">Will a ppt form when the two solutions are mixed?</p>
+        
+        <div class="main-section">
+            <div class="beaker-group">
+                <div class="beaker-display">
+                    <div class="beaker-visual" id="beaker1-visual"></div>
+                    <div class="beaker-content" id="beaker1-content"></div>
+                </div>
+                <div class="radio-section">
+                    <div class="radio-option" data-solution="1">
+                        <input type="radio" name="group1" id="solution-1" value="1">
+                        <label for="solution-1">
+                            <span class="solution-info">
+                                <span class="solution-line">20 cm³ of Li⁺(aq)</span>
+                                <span class="solution-line">1.0 mol dm⁻³</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="radio-option" data-solution="2">
+                        <input type="radio" name="group1" id="solution-2" value="2">
+                        <label for="solution-2">
+                            <span class="solution-info">
+                                <span class="solution-line">50 cm³ of Mg²⁺(aq)</span>
+                                <span class="solution-line">0.0010 mol dm⁻³</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="radio-option" data-solution="3">
+                        <input type="radio" name="group1" id="solution-3" value="3">
+                        <label for="solution-3">
+                            <span class="solution-info">
+                                <span class="solution-line">100 cm³ of CaCO₃(aq)</span>
+                                <span class="solution-line">1×10⁻⁵ mol dm⁻³</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="beaker-group">
+                <div class="beaker-display">
+                    <div class="beaker-visual" id="beaker2-visual"></div>
+                    <div class="beaker-content" id="beaker2-content"></div>
+                </div>
+                <div class="radio-section">
+                    <div class="radio-option" data-solution="a">
+                        <input type="radio" name="group2" id="solution-a" value="a">
+                        <label for="solution-a">
+                            <span class="solution-info">
+                                <span class="solution-line">20 cm³ of F⁻(aq)</span>
+                                <span class="solution-line">0.010 mol dm⁻³</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="radio-option" data-solution="b">
+                        <input type="radio" name="group2" id="solution-b" value="b">
+                        <label for="solution-b">
+                            <span class="solution-info">
+                                <span class="solution-line">50 cm³ of CO₃²⁻(aq)</span>
+                                <span class="solution-line">0.0010 mol dm⁻³</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="radio-option" data-solution="c">
+                        <input type="radio" name="group2" id="solution-c" value="c">
+                        <label for="solution-c">
+                            <span class="solution-info">
+                                <span class="solution-line">100 cm³ of Mg₃(PO₄)₂(aq)</span>
+                                <span class="solution-line">5×10⁻⁵ mol dm⁻³</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ksp text display -->
+        <div id="kspDisplay" class="ksp-display"></div>
+        
+        <div class="controls">
+            <button id="calculateBtn">Deduce whether a ppt will form</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        
+        <div id="results">
+            <p class="info-note">Select one solution from each group and click the button to see if precipitation occurs</p>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Beaker / stock solution data
+        const solutions = {
+            "1": { ionLabel: "Li⁺",       volumeCm3: 20,  volumeDm3: 0.020, volumeStr: "0.020", concStr: "1.0",      colorHex: "#FFE066" },
+            "2": { ionLabel: "Mg²⁺",      volumeCm3: 50,  volumeDm3: 0.050, volumeStr: "0.050", concStr: "0.0010",   colorHex: "#FFE066" },
+            "3": { ionLabel: "CaCO₃",     volumeCm3: 100, volumeDm3: 0.100, volumeStr: "0.100", concStr: "1 × 10⁻⁵", colorHex: "#FFE066" },
+            "a": { ionLabel: "F⁻",        volumeCm3: 20,  volumeDm3: 0.020, volumeStr: "0.020", concStr: "0.010",    colorHex: "#7DD3FC" },
+            "b": { ionLabel: "CO₃²⁻",     volumeCm3: 50,  volumeDm3: 0.050, volumeStr: "0.050", concStr: "0.0010",   colorHex: "#7DD3FC" },
+            "c": { ionLabel: "Mg₃(PO₄)₂", volumeCm3: 100, volumeDm3: 0.100, volumeStr: "0.100", concStr: "5 × 10⁻⁵", colorHex: "#7DD3FC" }
+        };
+
+        // Ionic species present in each stock solution (mol dm⁻3)
+        const speciesContributions = {
+            "1": { Li: { conc: 1.0,    concStr: "1.0" } },
+            "2": { Mg: { conc: 0.0010, concStr: "0.0010" } },
+            "3": {
+                Ca:  { conc: 1e-5,   concStr: "1 × 10⁻⁵" },
+                CO3: { conc: 1e-5,   concStr: "1 × 10⁻⁵" }
+            },
+            "a": { F:   { conc: 0.010,   concStr: "0.010" } },
+            "b": { CO3: { conc: 0.0010,  concStr: "0.0010" } },
+            "c": {
+                // Mg₃(PO₄)₂ at 5×10⁻⁵ mol dm⁻3
+                Mg:  { conc: 0.00015, concStr: "0.00015" }, // 3×5×10⁻⁵
+                PO4: { conc: 0.00010, concStr: "0.00010" }  // 2×5×10⁻⁵
+            }
+        };
+
+        // Combination data: main salt (for primary ppt) and its Ksp text
+        const combinations = {
+            "1-a": { cationId: "Li",  cationLabel: "Li⁺", anionId: "F",   anionLabel: "F⁻",     pCat: 1, pAn: 1, ksp: 3.8e-3,  kspText: "K<sub>sp</sub> value of LiF = 3.8×10<sup>-3</sup>" },
+            "1-b": { cationId: "Li",  cationLabel: "Li⁺", anionId: "CO3", anionLabel: "CO₃²⁻",  pCat: 2, pAn: 1, ksp: 2.5e-2,  kspText: "K<sub>sp</sub> value of Li₂CO₃ = 2.5×10<sup>-2</sup>" },
+            "1-c": { cationId: "Li",  cationLabel: "Li⁺", anionId: "PO4", anionLabel: "PO₄³⁻",  pCat: 3, pAn: 1, ksp: 3.2e-9,  kspText: "K<sub>sp</sub> value of Li₃PO₄ = 3.2×10<sup>-9</sup>" },
+            "2-a": { cationId: "Mg",  cationLabel: "Mg²⁺", anionId: "F",   anionLabel: "F⁻",     pCat: 1, pAn: 2, ksp: 3.7e-8,  kspText: "K<sub>sp</sub> value of MgF₂ = 3.7×10<sup>-8</sup>" },
+            "2-b": { cationId: "Mg",  cationLabel: "Mg²⁺", anionId: "CO3", anionLabel: "CO₃²⁻",  pCat: 1, pAn: 1, ksp: 3.5e-8,  kspText: "K<sub>sp</sub> value of MgCO₃ = 3.5×10<sup>-8</sup>" },
+            "2-c": { cationId: "Mg",  cationLabel: "Mg²⁺", anionId: "PO4", anionLabel: "PO₄³⁻",  pCat: 3, pAn: 2, ksp: 1e-25,   kspText: "K<sub>sp</sub> value of Mg₃(PO₄)₂ = 1×10<sup>-25</sup>" },
+            "3-a": { cationId: "Ca",  cationLabel: "Ca²⁺", anionId: "F",   anionLabel: "F⁻",     pCat: 1, pAn: 2, ksp: 5.3e-9,  kspText: "K<sub>sp</sub> value of CaF₂ = 5.3×10<sup>-9</sup>" },
+            "3-b": { cationId: "Ca",  cationLabel: "Ca²⁺", anionId: "CO3", anionLabel: "CO₃²⁻",  pCat: 1, pAn: 1, ksp: 2.8e-9,  kspText: "K<sub>sp</sub> value of CaCO₃ = 2.8×10<sup>-9</sup>" },
+            "3-c": { cationId: "Ca",  cationLabel: "Ca²⁺", anionId: "PO4", anionLabel: "PO₄³⁻",  pCat: 3, pAn: 2, ksp: 2e-29,   kspText: "K<sub>sp</sub> value of Ca₃(PO₄)₂ = 2×10<sup>-29</sup>" }
+        };
+
+        const KSP_MGCO3 = 3.5e-8;
+
+        // Convert exponent integer -> unicode superscript string (e.g. -6 -> ⁻⁶)
+        function toSuperscript(exponent) {
+            const map = {
+                '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+                '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+                '-': '⁻', '+': '⁺'
+            };
+            const expStr = exponent.toString();
+            return expStr.split("").map(ch => map[ch] || ch).join("");
+        }
+
+        // Format numbers:
+        // - Normal region: trimmed decimals (0.500 → 0.5)
+        // - Scientific region: a.bcd × 10ⁿ using unicode superscripts, like radio text
+        function formatNumber(num, precision) {
+            if (precision === undefined) precision = 3;
+            const abs = Math.abs(num);
+            if (abs === 0) return "0";
+
+            // Scientific notation region
+            if (abs < 1e-4 || abs > 1e4) {
+                const expStr = num.toExponential(precision);
+                const parts = expStr.split('e');    // ["5.000", "-6"]
+                const mantissa = parseFloat(parts[0]).toPrecision(precision);
+                const exponent = parseInt(parts[1], 10);
+                return mantissa + " × 10" + toSuperscript(exponent);
+            }
+
+            // Normal numbers: trim trailing zeros
+            const s = num.toPrecision(precision);
+            return parseFloat(s).toString();
+        }
+
+        function buildNumeratorHTML(c1, v1Str, c2, v2Str) {
+            let html = "";
+            if (c1) {
+                html += '<span class="highlight-yellow">(' + c1.concStr + ")(" + v1Str + ")</span>";
+            }
+            if (c2) {
+                if (html) html += " + ";
+                html += '<span class="highlight-purple">(' + c2.concStr + ")(" + v2Str + ")</span>";
+            }
+            if (!html) html = "0";
+            return html;
+        }
+
+        function updateKspDisplay() {
+            const r1 = document.querySelector('input[name="group1"]:checked');
+            const r2 = document.querySelector('input[name="group2"]:checked');
+            const box = document.getElementById("kspDisplay");
+            if (!r1 || !r2) {
+                box.style.display = "none";
+                box.innerHTML = "";
+                return;
+            }
+            const key = r1.value + "-" + r2.value;
+            const combo = combinations[key];
+            if (combo) {
+                if (key === "3-c") {
+                    box.innerHTML = combo.kspText +
+                        '<br>K<sub>sp</sub> value of MgCO₃ = 3.5×10<sup>-8</sup>';
+                } else {
+                    box.innerHTML = combo.kspText;
+                }
+                box.style.display = "block";
+            } else {
+                box.style.display = "none";
+                box.innerHTML = "";
+            }
+        }
+
+        function updateBeakerVisual(beakerId, sol, contentId) {
+            const beaker = document.getElementById(beakerId);
+            const label = document.getElementById(contentId);
+            const maxVolume = 100; // largest volume
+            const fillFraction = sol.volumeCm3 / maxVolume; // 0.2, 0.5, 1.0
+            const cutoff = 100 - fillFraction * 100; // % from top
+
+            beaker.style.background = `linear-gradient(to bottom, transparent ${cutoff}%, ${sol.colorHex} ${cutoff}%)`;
+
+            // Beaker overlay text
+            label.innerHTML =
+                sol.volumeCm3 + " cm³ of " + sol.ionLabel + "(aq)<br>" +
+                sol.concStr + " mol dm<sup>-3</sup>";
+        }
+
+        // Radio behaviour: highlight selection, fill beaker, show text, update Ksp
+        const radios = document.querySelectorAll('input[type="radio"]');
+        for (let i = 0; i < radios.length; i++) {
+            radios[i].addEventListener("change", function () {
+                const group = this.name;
+                const value = this.value;
+                const sol = solutions[value];
+
+                // Highlight selection in that group
+                const sameGroup =
+                    document.querySelectorAll('input[name="' + group + '"]');
+                for (let j = 0; j < sameGroup.length; j++) {
+                    sameGroup[j].closest(".radio-option").classList.remove("selected");
+                }
+                this.closest(".radio-option").classList.add("selected");
+
+                // Update beaker visuals + overlay text
+                if (group === "group1") {
+                    updateBeakerVisual("beaker1-visual", sol, "beaker1-content");
+                } else {
+                    updateBeakerVisual("beaker2-visual", sol, "beaker2-content");
+                }
+
+                updateKspDisplay();
+            });
+        }
+
+        function calculate() {
+            const r1 = document.querySelector('input[name="group1"]:checked');
+            const r2 = document.querySelector('input[name="group2"]:checked');
+            if (!r1 || !r2) {
+                document.getElementById("results").innerHTML =
+                    '<p class="info-note">Please select one solution from each group</p>';
+                return;
+            }
+
+            const key = r1.value + "-" + r2.value;
+            const combo = combinations[key];
+            if (!combo) {
+                document.getElementById("results").innerHTML =
+                    '<p class="info-note">This combination is not defined.</p>';
+                return;
+            }
+
+            const s1 = solutions[r1.value];
+            const s2 = solutions[r2.value];
+            const totalV = s1.volumeDm3 + s2.volumeDm3;
+
+            function mixedConcentration(speciesId) {
+                const c1 = speciesContributions[r1.value] &&
+                           speciesContributions[r1.value][speciesId];
+                const c2 = speciesContributions[r2.value] &&
+                           speciesContributions[r2.value][speciesId];
+                let moles = 0;
+                if (c1) moles += c1.conc * s1.volumeDm3;
+                if (c2) moles += c2.conc * s2.volumeDm3;
+                const conc = moles / totalV;
+                return { conc: conc, c1: c1, c2: c2 };
+            }
+
+            // Main salt calculation (from combo mapping)
+            const cat = mixedConcentration(combo.cationId);
+            const an = mixedConcentration(combo.anionId);
+
+            const cCat = cat.conc;
+            const cAn = an.conc;
+
+            const ionProduct =
+                Math.pow(cCat, combo.pCat) * Math.pow(cAn, combo.pAn);
+
+            let html = '<div class="calculation-display">';
+
+            // cation line
+            html += '<div class="calculation-line">';
+            html += "[" + combo.cationLabel + "]<sub>on mixing</sub> = ";
+            html += '<div class="fraction">' +
+                    '<span class="numerator">' +
+                    buildNumeratorHTML(cat.c1, s1.volumeStr, cat.c2, s2.volumeStr) +
+                    "</span>" +
+                    '<span class="denominator">' + s1.volumeStr + " + " + s2.volumeStr + "</span>" +
+                    "</div>";
+            html += " = " + formatNumber(cCat) + " mol dm⁻³";
+            html += "</div>";
+
+            // anion line
+            html += '<div class="calculation-line">';
+            html += "[" + combo.anionLabel + "]<sub>on mixing</sub> = ";
+            html += '<div class="fraction">' +
+                    '<span class="numerator">' +
+                    buildNumeratorHTML(an.c1, s1.volumeStr, an.c2, s2.volumeStr) +
+                    "</span>" +
+                    '<span class="denominator">' + s1.volumeStr + " + " + s2.volumeStr + "</span>" +
+                    "</div>";
+            html += " = " + formatNumber(cAn) + " mol dm⁻³";
+            html += "</div>";
+
+            // IP line for main salt
+            html += '<div class="calculation-line" style="margin-top:18px;">';
+            html += "I.P. = (" + formatNumber(cCat) + ")";
+            if (combo.pCat > 1) html += "<sup>" + combo.pCat + "</sup>";
+            html += "(" + formatNumber(cAn) + ")";
+            if (combo.pAn > 1) html += "<sup>" + combo.pAn + "</sup>";
+            html += " = " + formatNumber(ionProduct);
+            html += "</div>";
+
+            // Ksp line for main salt (calculation section)
+            html += '<div class="calculation-line" style="margin-top:10px;">';
+            html += "K<sub>sp</sub> = " + formatNumber(combo.ksp);
+            html += "</div>";
+
+            // conclusion for main salt
+            if (key === "3-c") {
+                if (ionProduct > combo.ksp) {
+                    html += '<div class="ip-result precipitate-yes">I.P. of Ca₃(PO₄)₂ &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
+                } else {
+                    html += '<div class="ip-result precipitate-no">I.P. of Ca₃(PO₄)₂ &lt; K<sub>sp</sub> ⇒ no ppt</div>';
+                }
+            } else {
+                if (ionProduct > combo.ksp) {
+                    html += '<div class="ip-result precipitate-yes">I.P. &gt; K<sub>sp</sub> ⇒ ppt forms</div>';
+                } else {
+                    html += '<div class="ip-result precipitate-no">I.P. &lt; K<sub>sp</sub> ⇒ no ppt</div>';
+                }
+            }
+
+            // EXTRA: For combination (3)(c), also show MgCO₃ IP + Ksp
+            if (key === "3-c") {
+                // Mg²⁺ from solution 2 (c), CO₃²⁻ from solution 1 (3)
+                const mgCat = mixedConcentration("Mg");
+                const co3An = mixedConcentration("CO3");
+
+                const cMg = mgCat.conc;
+                const cCO3 = co3An.conc;
+                const ipMgCO3 = cMg * cCO3;
+
+                // Mg2+ line
+                html += '<div class="calculation-line" style="margin-top:18px;">';
+                html += "[Mg²⁺]<sub>on mixing</sub> = ";
+                html += '<div class="fraction">' +
+                        '<span class="numerator">' +
+                        buildNumeratorHTML(mgCat.c1, s1.volumeStr, mgCat.c2, s2.volumeStr) +
+                        "</span>" +
+                        '<span class="denominator">' + s1.volumeStr + " + " + s2.volumeStr + "</span>" +
+                        "</div>";
+                html += " = " + formatNumber(cMg) + " mol dm⁻³";
+                html += "</div>";
+
+                // CO3^2- line
+                html += '<div class="calculation-line">';
+                html += "[CO₃²⁻]<sub>on mixing</sub> = ";
+                html += '<div class="fraction">' +
+                        '<span class="numerator">' +
+                        buildNumeratorHTML(co3An.c1, s1.volumeStr, co3An.c2, s2.volumeStr) +
+                        "</span>" +
+                        '<span class="denominator">' + s1.volumeStr + " + " + s2.volumeStr + "</span>" +
+                        "</div>";
+                html += " = " + formatNumber(cCO3) + " mol dm⁻³";
+                html += "</div>";
+
+                // IP for MgCO3
+                html += '<div class="calculation-line" style="margin-top:18px;">';
+                html += "I.P. (for MgCO₃) = (" + formatNumber(cMg) + ")(" + formatNumber(cCO3) + ")";
+                html += " = " + formatNumber(ipMgCO3);
+                html += "</div>";
+
+                // Ksp for MgCO3 in calculation section
+                html += '<div class="calculation-line" style="margin-top:10px;">';
+                html += "K<sub>sp</sub> (for MgCO₃) = " + formatNumber(KSP_MGCO3);
+                html += "</div>";
+
+                // MgCO3 conclusion
+                html += '<div class="ip-result precipitate-no">I.P. of MgCO₃ &lt; K<sub>sp</sub> ⇒ no ppt</div>';
+            }
+
+            html += "</div>";
+
+            document.getElementById("results").innerHTML = html;
+            updateKspDisplay();
+        }
+
+        function resetAll() {
+            const radios = document.querySelectorAll('input[type="radio"]');
+            for (let i = 0; i < radios.length; i++) {
+                radios[i].checked = false;
+            }
+            const options = document.querySelectorAll(".radio-option");
+            for (let j = 0; j < options.length; j++) {
+                options[j].classList.remove("selected");
+            }
+
+            const b1 = document.getElementById("beaker1-visual");
+            const b2 = document.getElementById("beaker2-visual");
+            const c1 = document.getElementById("beaker1-content");
+            const c2 = document.getElementById("beaker2-content");
+
+            b1.style.background = "linear-gradient(to bottom, transparent 100%)";
+            b2.style.background = "linear-gradient(to bottom, transparent 100%)";
+            c1.innerHTML = "";
+            c2.innerHTML = "";
+
+            document.getElementById("results").innerHTML =
+                '<p class="info-note">Select one solution from each group and click the button to see if precipitation occurs</p>';
+
+            const box = document.getElementById("kspDisplay");
+            box.style.display = "none";
+            box.innerHTML = "";
+        }
+
+        document.getElementById("calculateBtn").addEventListener("click", calculate);
+        document.getElementById("resetBtn").addEventListener("click", resetAll);
+    });
+    </script>
+</body>
+</html>
