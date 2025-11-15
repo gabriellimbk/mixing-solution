@@ -592,7 +592,7 @@
                     </div>
                     <div class="radio-option" data-solution="c">
                         <input type="radio" name="group2" id="solution-c" value="c">
-                        <label for="solution-c">
+                            <label for="solution-c">
                             <span class="solution-info">
                                 <span class="solution-line">100 cm³ of Mg₃(PO₄)₂(aq)</span>
                                 <span class="solution-line">5×10⁻⁵ mol dm⁻³</span>
@@ -993,6 +993,52 @@
             }
 
             html += summaryHtml;
+
+            // Extension questions for selected combos when no ppt forms
+            if (key === "1-a" && !willPrecipitate) {
+                html += '<div style="font-style:italic; color:#000; margin-top:6px;">' +
+                        '<span style="font-weight:bold;">extension question:</span>' +
+                        '<br>' +
+                        '<span>what is the minimum concentration of the 20 cm³ solution of F⁻(aq) to form a ppt?</span>' +
+                        '</div>';
+            }
+
+            // (a)(2): Li⁺ + CO₃²⁻ → key "1-b"
+            if (key === "1-b" && !willPrecipitate) {
+                html += '<div style="font-style:italic; color:#000; margin-top:6px;">' +
+                        '<span style="font-weight:bold;">extension question:</span>' +
+                        '<br>' +
+                        '<span>what is the minimum concentration of the 50 cm³ CO₃²⁻(aq) solution to form a ppt?</span>' +
+                        '</div>';
+            }
+
+            // (b)(1): Mg²⁺ + F⁻ → key "2-a"
+            if (key === "2-a" && !willPrecipitate) {
+                html += '<div style="font-style:italic; color:#000; margin-top:6px;">' +
+                        '<span style="font-weight:bold;">extension question:</span>' +
+                        '<br>' +
+                        '<span>what is the minimum concentration of the 20 cm³ F⁻(aq) solution to form a ppt?</span>' +
+                        '</div>';
+            }
+
+            // (c)(1): CaCO₃ (Ca²⁺) + F⁻ → key "3-a"
+            if (key === "3-a" && !willPrecipitate) {
+                html += '<div style="font-style:italic; color:#000; margin-top:6px;">' +
+                        '<span style="font-weight:bold;">extension question:</span>' +
+                        '<br>' +
+                        '<span>what is the minimum concentration of the 20 cm³ F⁻(aq) solution to form a ppt?</span>' +
+                        '</div>';
+            }
+
+            // (c)(2): CaCO₃ (Ca²⁺) + CO₃²⁻ → key "3-b"
+            if (key === "3-b" && !willPrecipitate) {
+                html += '<div style="font-style:italic; color:#000; margin-top:6px;">' +
+                        '<span style="font-weight:bold;">extension question:</span>' +
+                        '<br>' +
+                        '<span>what is the minimum concentration of the 50 cm³ CO₃²⁻(aq) solution to form a ppt?</span>' +
+                        '</div>';
+            }
+            // End extension blocks
 
             if (key === "3-c") {
                 const mgCat = mixedConcentration("Mg");
